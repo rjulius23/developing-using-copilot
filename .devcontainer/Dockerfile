@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
+# Install aider-chat python package
+RUN pip3 install aider-chat
+
 # Create a non-root user and add to sudoers
 RUN useradd -ms /bin/bash vscode \
     && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
