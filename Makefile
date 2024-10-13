@@ -1,41 +1,63 @@
----FILEPATH Makefile
----FIND
-
-
----REPLACE
-```
-# Makefile
-
-CC = g++
-CFLAGS = -g -Wall
+# Compiler and linker
+CXX := g++
+CXXFLAGS := -Wall -Wextra -std=c++11 -Iinclude -MMD -MP
+LDFLAGS := -pthread
 
 # Directories
-INCLUDE_DIR = include
-SRC_DIR = src
-TEST_DIR = tests
+SRC_DIR := src
+INCLUDE_DIR := include
+TEST_DIR := tests
+OBJ_DIR := obj
+OBJ_DIR_SRC := $(OBJ_DIR)/src
+OBJ_DIR_TEST := $(OBJ_DIR)/tests
+BIN_DIR := bin
 
 # Files
-SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
-TEST_FILES = $(wildcard $(TEST_DIR)/*.cpp)
+SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
+TEST_SOURCES := $(wildcard $(TEST_DIR)/*.cpp)
+
+OBJS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR_SRC)/%.o,$(SOURCES))
+TEST_OBJS := $(patsubst $(TEST_DIR)/%.cpp,$(OBJ_DIR_TEST)/%.o,$(TEST_SOURCES))
+
+# All object files
+ALL_OBJS := $(OBJS) $(TEST_OBJS)
 
 # Executables
-EXECUTABLE = main
-TEST_EXECUTABLE = test
+TEST_EXEC := $(BIN_DIR)/runTests
 
-# Targets
-all: $(EXECUTABLE)
+# Default target
+all: $(TEST_EXEC)
 
-$(EXECUTABLE): $(SRC_FILES)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -o $@ $^
+# Create necessary directories
+$(OBJ_DIR_SRC):
+	mkdir -p $(OBJ_DIR_SRC)
 
-test: $(TEST_EXECUTABLE)
+$(OBJ_DIR_TEST):
+	mkdir -p $(OBJ_DIR_TEST)
 
-$(TEST_EXECUTABLE): $(TEST_FILES)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -o $@ $^ -lgtest -lgtest_main
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
 
-.PHONY: clean
+# Pattern rules for compiling source files
+$(OBJ_DIR_SRC)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR_SRC)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Pattern rules for compiling test files
+$(OBJ_DIR_TEST)/%.o: $(TEST_DIR)/%.cpp | $(OBJ_DIR_TEST)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Linking the test executable
+$(TEST_EXEC): $(ALL_OBJS) | $(BIN_DIR)
+	$(CXX) $(CXXFLAGS) $(ALL_OBJS) -o $@ $(LDFLAGS) -lgtest -lgtest_main
+
+# Run tests
+test: $(TEST_EXEC)
+	$(TEST_EXEC)
+
+# Clean up build artifacts
 clean:
-	rm -f $(EXECUTABLE) $(TEST_EXECUTABLE)
-```
----COMPLETE
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+# Include dependency files
+-include $(OBJS:.o=.d)
+-include $(TEST_OBJS:.o=.d)

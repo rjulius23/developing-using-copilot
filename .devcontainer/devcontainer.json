@@ -11,7 +11,8 @@
                 "ms-vscode.cmake-tools",
                 "twxs.cmake",
                 "vector-of-bool.cmake-tools",
-                "github.copilot"
+                "github.copilot",
+                "ms-vscode.cpptools-extension-pack"
             ]
         }
     },
