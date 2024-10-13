@@ -1,16 +1,14 @@
-#ifndef LANE_KEEPING_ASSISTANT_HPP
-#define LANE_KEEPING_ASSISTANT_HPP
+#ifndef LANE_DETECTION_ALGORITHM_HPP
+#define LANE_DETECTION_ALGORITHM_HPP
 
-#include "LaneDetectionAlgorithm.hpp"
 #include <vector>
+#include <iostream>
 
-class LaneKeepingAssistant {
-private:
-    LaneDetectionAlgorithm* laneDetector;
-
+class LaneDetectionAlgorithm {
 public:
-    LaneKeepingAssistant(LaneDetectionAlgorithm* detector);
-    double processSensorData(const std::vector<int>& sensorData);
+    virtual ~LaneDetectionAlgorithm() = default;
+    virtual double detectLaneOffset(const std::vector<int>& sensorData);
 };
 
-#endif // LANE_KEEPING_ASSISTANT_HPP
+#endif // LANE_DETECTION_ALGORITHM_HPP
+
