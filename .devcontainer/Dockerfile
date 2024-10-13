@@ -31,7 +31,12 @@ USER vscode
 WORKDIR /workspace
 
 # Install Google Test
-RUN cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/local/lib
+RUN cd /usr/src/gtest && \
+    sudo mkdir build && \
+    cd build && \
+    sudo cmake .. && \
+    sudo make && \
+    sudo cp lib/*.a /usr/local/lib
 
 # Set the default shell to bash
 SHELL ["/bin/bash", "-c"]
