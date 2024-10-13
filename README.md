@@ -1,5 +1,5 @@
 # developing-using-copilot
-This a repo to demonstrate working with coding assistants.
+This is a repo to demonstrate working with coding assistants.
 
 ## Task 1
 ### Generate unit tests for the different functions
